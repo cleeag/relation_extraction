@@ -50,6 +50,7 @@ class OpenaiTransformerBytePairIndexer(TokenIndexer[int]):
                  model_path: str = None,
                  namespace: str = 'openai_transformer',
                  tokens_to_add: List[str] = None) -> None:
+        super().__init__()
         self._namespace = namespace
         self._added_to_vocabulary = False
 

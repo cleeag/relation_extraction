@@ -15,18 +15,26 @@ def run():
     reader_params = config['dataset_reader']
     iterator_params = config['iterator']
     trainer_params = config['trainer']
+    vocab = Vocabulary()
+    label_encoder = json.loads(open("/home/cleeag/relation_extraction/data/open_nre_nyt/rel2id.json", 'r').read())
+    for word, idx in label_encoder.items():
+        vocab._token_to_index['labels'][word] = idx
+        vocab._index_to_token['labels'][idx] = word
+
     tre_byte_pair_indexer = OpenaiTransformerBytePairIndexer(
         model_path=reader_params['token_indexers']['byte_pairs']['model_path'],
-        tokens_to_add=reader_params['token_indexers']['byte_pairs']['tokens_to_add'])
+        tokens_to_add=reader_params['token_indexers']['byte_pairs']['tokens_to_add'],
+        vocabulary=vocab)
 
     data_reader = open_nre_nyt_reader.OpenNreNYTReader("ner_most_specific", {"byte_pairs": tre_byte_pair_indexer})
     dataset = data_reader.read("/home/cleeag/relation_extraction/data/open_nre_nyt/small_test.json")
     batch_iterator = bag_iterator.BagIterator(sorting_keys=iterator_params["sorting_keys"],
                                               biggest_batch_first=iterator_params['biggest_batch_first'],
                                               batch_size=iterator_params['batch_size'],
-                                              maximum_samples_per_batch=iterator_params['maximum_samples_per_batch'])
+                                              maximum_samples_per_batch=iterator_params['maximum_samples_per_batch'],
+                                              vocab=vocab)
 
-    vocab = Vocabulary()
+
     # vocab.add_tokens_to_namespace(reader_params['token_indexers']['tokens_to_add'])
     vocab.print_statistics()
 

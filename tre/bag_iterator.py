@@ -65,7 +65,8 @@ class BagIterator(DataIterator):
                  max_instances_in_memory: int = None,
                  cache_instances: bool = False,
                  track_epoch: bool = False,
-                 maximum_samples_per_batch: Tuple[str, int] = None) -> None:
+                 maximum_samples_per_batch: Tuple[str, int] = None,
+                 vocab: Vocabulary = None) -> None:
         if not sorting_keys:
             raise ConfigurationError("BucketIterator requires sorting_keys to be specified")
 
@@ -78,6 +79,7 @@ class BagIterator(DataIterator):
         self._sorting_keys = sorting_keys
         self._padding_noise = padding_noise
         self._biggest_batch_first = biggest_batch_first
+        self.vocab = vocab
 
     @overrides
     def _create_batches(self, instances: Iterable[Instance], shuffle: bool) -> Iterable[Batch]:
