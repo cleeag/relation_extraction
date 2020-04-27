@@ -48,7 +48,7 @@
     },
     "train_data_path": "./data/open_nre_nyt/train.json",
     "trainer": {
-        "cuda_device": -1,
+        "cuda_device": 1,
         "num_epochs": 3,
         "optimizer": {
             "type": "openai_adam",
